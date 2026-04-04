@@ -1,255 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  signInAnonymously, 
-  onAuthStateChanged,
-  signInWithCustomToken
-} from 'firebase/auth';
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  onSnapshot, 
-  query,
-  orderBy
-} from 'firebase/firestore';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Reports Workshop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
 
-// --- КОНФИГУРАЦИЯ FIREBASE (Автоматическая настройка среды) ---
-const firebaseConfig = JSON.parse(__firebase_config);
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-export default function App() {
-  const [user, setUser] = useState(null);
-  const [studentName, setStudentName] = useState('');
-  const [status, setStatus] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [submissions, setSubmissions] = useState([]);
+        // Данные конфигурации (автоматически подставляются средой или берутся пустые для демо)
+        const firebaseConfig = JSON.parse(window.__firebase_config || '{}');
+        const appId = typeof window.__app_id !== 'undefined' ? window.__app_id : 'default-app-id';
 
-  // Состояние ответов студента
-  const [order, setOrder] = useState(['', '', '', '', '', '', '']);
-  const [vocab, setVocab] = useState({ viability: '', efficiency: '', mitigation: '', implementation: '' });
-  const [rewriting, setRewriting] = useState({ q1: '', q2: '', q3: '', q4: '', q5: '', q6: '' });
-
-  // 1. Аутентификация (Правило 3: Сначала вход, потом запросы)
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
+        // Инициализация Firebase (Compat mode для работы в одном файле)
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
-      } catch (err) {
-        console.error("Auth error:", err);
-      }
-    };
-    initAuth();
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-  // 2. Получение данных для учителя (Правило 1 и 2: Путь и простые запросы)
-  useEffect(() => {
-    if (!user || !isAdmin) return;
-    
-    // Путь к публичной коллекции согласно Правилу 1
-    const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'student_responses');
-    
-    const unsubscribe = onSnapshot(submissionsRef, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      // Сортировка в памяти (Правило 2: никаких сложных orderBy в Firestore)
-      const sortedData = data.sort((a, b) => b.serverTimestamp - a.serverTimestamp);
-      setSubmissions(sortedData);
-    }, (error) => {
-      console.error("Firestore error:", error);
-    });
+        function App() {
+            const [user, setUser] = useState(null);
+            const [studentName, setStudentName] = useState('');
+            const [status, setStatus] = useState('');
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [submissions, setSubmissions] = useState([]);
+            const [order, setOrder] = useState(['', '', '', '', '', '', '']);
+            const [rewriting, setRewriting] = useState({ q1: '', q2: '', q3: '', q6: '' });
 
-    return () => unsubscribe();
-  }, [user, isAdmin]);
+            useEffect(() => {
+                const initAuth = async () => {
+                    try {
+                        if (typeof window.__initial_auth_token !== 'undefined' && window.__initial_auth_token) {
+                            await auth.signInWithCustomToken(window.__initial_auth_token);
+                        } else {
+                            await auth.signInAnonymously();
+                        }
+                    } catch (err) { console.error("Auth error:", err); }
+                };
+                initAuth();
+                return auth.onAuthStateChanged(setUser);
+            }, []);
 
-  const handleOrderChange = (index, value) => {
-    const newOrder = [...order];
-    newOrder[index] = value;
-    setOrder(newOrder);
-  };
+            useEffect(() => {
+                if (!user || !isAdmin) return;
+                const path = `artifacts/${appId}/public/data/student_responses`;
+                return db.collection(path).onSnapshot(snapshot => {
+                    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setSubmissions(data.sort((a, b) => b.serverTimestamp - a.serverTimestamp));
+                });
+            }, [user, isAdmin]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!studentName.trim()) return setStatus('Пожалуйста, введите ваше имя.');
-    if (!user) return setStatus('Ошибка авторизации. Попробуйте обновить страницу.');
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                if (!studentName.trim()) return setStatus('Введите имя.');
+                try {
+                    setStatus('Отправка...');
+                    await db.collection(`artifacts/${appId}/public/data/student_responses`).add({
+                        studentName, order, rewriting, 
+                        timestamp: new Date().toLocaleString(),
+                        serverTimestamp: Date.now()
+                    });
+                    setStatus('Успешно сохранено!');
+                    setStudentName('');
+                } catch (err) { setStatus('Ошибка отправки.'); }
+            };
 
-    try {
-      setStatus('Отправка...');
-      const submissionsRef = collection(db, 'artifacts', appId, 'public', 'data', 'student_responses');
-      
-      await addDoc(submissionsRef, {
-        studentName,
-        order,
-        vocab,
-        rewriting,
-        timestamp: new Date().toLocaleString(),
-        serverTimestamp: Date.now() // Для сортировки
-      });
+            const reportSections = ["Executive Summary", "Introduction", "Evaluation Criteria", "Findings", "Analysis & Discussion", "Conclusion", "Recommendations"];
 
-      setStatus('Успешно! Ваши ответы сохранены.');
-      // Очистка формы
-      setStudentName('');
-    } catch (err) {
-      console.error(err);
-      setStatus('Ошибка при отправке. Попробуйте еще раз.');
-    }
-  };
+            return (
+                <div className="min-h-screen p-4 md:p-8 text-slate-900">
+                    <div className="max-w-4xl mx-auto">
+                        <header className="bg-slate-900 text-white p-6 rounded-t-3xl flex justify-between items-center shadow-xl">
+                            <div>
+                                <h1 className="text-xl font-bold text-blue-400">Engineering Reports Workshop</h1>
+                                <p className="text-slate-400 text-xs italic">Vocabulary & Structure v2.0</p>
+                            </div>
+                            <button onClick={() => setIsAdmin(!isAdmin)} className="text-[10px] border border-slate-700 px-3 py-1 rounded-full hover:bg-slate-800 transition-all">
+                                {isAdmin ? '🔒 Student Mode' : '🔓 Teacher Access'}
+                            </button>
+                        </header>
 
-  const reportSections = [
-    "Executive Summary", "Introduction", "Evaluation Criteria", 
-    "Findings", "Analysis & Discussion", "Conclusion", "Recommendations"
-  ];
+                        {isAdmin ? (
+                            <div className="bg-white p-6 rounded-b-3xl shadow-xl border">
+                                <h2 className="font-bold mb-4 border-b pb-2">Student Responses ({submissions.length})</h2>
+                                <div className="space-y-4">
+                                    {submissions.map(s => (
+                                        <div key={s.id} className="border p-4 rounded-xl bg-slate-50">
+                                            <div className="flex justify-between font-bold text-sm mb-2 text-blue-600">
+                                                <span>{s.studentName}</span>
+                                                <span className="text-slate-400 font-normal">{s.timestamp}</span>
+                                            </div>
+                                            <p className="text-xs italic text-slate-700 bg-white p-2 rounded border">"{s.rewriting.q1}"</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="bg-white p-6 md:p-10 rounded-b-3xl shadow-xl border space-y-8">
+                                <section>
+                                    <h3 className="font-bold mb-4 text-slate-800">1. Logical Sequencing</h3>
+                                    <div className="grid gap-2 max-w-xs">
+                                        {order.map((val, i) => (
+                                            <select key={i} value={val} onChange={(e) => {
+                                                const n = [...order]; n[i] = e.target.value; setOrder(n);
+                                            }} className="p-2 bg-slate-50 border rounded-lg text-xs">
+                                                <option value="">-- Section {i+1} --</option>
+                                                {reportSections.map(rs => <option key={rs} value={rs}>{rs}</option>)}
+                                            </select>
+                                        ))}
+                                    </div>
+                                </section>
 
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans p-4 md:p-8 text-slate-900">
-      <div className="max-w-4xl mx-auto">
-        <header className="bg-slate-900 text-white p-8 rounded-t-3xl flex justify-between items-center shadow-2xl border-b border-white/10">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-blue-400">Engineering Reports Workshop</h1>
-            <p className="text-slate-400 text-sm italic">Vocabulary, Tone & Structure v2.0</p>
-          </div>
-          <button 
-            onClick={() => setIsAdmin(!isAdmin)} 
-            className={`text-xs px-4 py-2 rounded-full transition-all border ${isAdmin ? 'bg-blue-600 border-blue-400' : 'bg-slate-800 border-slate-700 hover:bg-slate-700'}`}
-          >
-            {isAdmin ? '🔒 Режим студента' : '🔓 Панель учителя'}
-          </button>
-        </header>
+                                <section className="space-y-6">
+                                    <h3 className="font-bold text-slate-800">2. Formal Rewriting</h3>
+                                    {[
+                                        { id: 'q1', label: 'PURPOSE', text: '"I\'m checking if the new filters are actually worth the money."', prompt: 'Start: The aim of this report...' },
+                                        { id: 'q2', label: 'FINDINGS', text: '"The system is better at cleaning water."', prompt: 'Use: Efficiency / Contaminant removal.' }
+                                    ].map(item => (
+                                        <div key={item.id} className="space-y-2">
+                                            <div className="flex justify-between text-[10px] font-bold tracking-widest text-blue-500 uppercase">
+                                                <span>{item.label}</span>
+                                                <span className="text-slate-400 normal-case italic">{item.prompt}</span>
+                                            </div>
+                                            <p className="text-xs text-slate-600 border-l-2 border-blue-100 pl-3">{item.text}</p>
+                                            <textarea 
+                                                className="w-full p-3 bg-slate-50 border rounded-xl text-sm focus:ring-2 focus:ring-blue-100 outline-none"
+                                                rows="2" value={rewriting[item.id]} onChange={(e) => setRewriting({...rewriting, [item.id]: e.target.value})}
+                                            />
+                                        </div>
+                                    ))}
+                                </section>
 
-        {isAdmin ? (
-          <div className="bg-white p-6 md:p-10 rounded-b-3xl shadow-xl border border-slate-200">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-blue-600 underline underline-offset-4">Ответы студентов</span>
-              <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-full">{submissions.length}</span>
-            </h2>
-            
-            {submissions.length === 0 ? (
-              <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                <p className="text-slate-400 italic">Студенты еще не отправили ни одной работы.</p>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {submissions.map((s) => (
-                  <div key={s.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-center mb-4 border-b pb-3">
-                      <span className="font-bold text-slate-800 text-lg">{s.studentName}</span>
-                      <span className="text-[10px] text-slate-400 font-mono">{s.timestamp}</span>
+                                <div className="pt-6 border-t">
+                                    <div className="bg-slate-900 p-6 rounded-2xl flex flex-col md:flex-row gap-4 items-center">
+                                        <input 
+                                            type="text" placeholder="Your Full Name..." value={studentName} 
+                                            onChange={(e) => setStudentName(e.target.value)}
+                                            className="w-full p-3 rounded-xl bg-white/10 text-white border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <button className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-500 transition-all">SUBMIT</button>
+                                    </div>
+                                    {status && <p className="text-center mt-3 text-xs font-bold text-blue-600">{status}</p>}
+                                </div>
+                            </form>
+                        )}
                     </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <p className="text-[10px] font-bold text-blue-500 uppercase">Структура отчета:</p>
-                        <ol className="text-xs list-decimal list-inside text-slate-600">
-                          {s.order.map((item, idx) => <li key={idx}>{item || '---'}</li>)}
-                        </ol>
-                      </div>
-                      <div className="space-y-3">
-                        <p className="text-[10px] font-bold text-blue-500 uppercase">Rewriting Sample (Task 3.1):</p>
-                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 italic text-xs text-slate-700">
-                          {s.rewriting.q1 || "Нет ответа"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="bg-white p-6 md:p-10 rounded-b-3xl shadow-xl border border-slate-200 space-y-12">
-            
-            {/* Exercise 1 */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg shadow-blue-200">1</span>
-                <h3 className="text-lg font-bold text-slate-800">Logical Sequencing</h3>
-              </div>
-              <div className="grid gap-3 max-w-lg">
-                {order.map((val, i) => (
-                  <div key={i} className="flex items-center gap-4 group">
-                    <span className="text-slate-300 font-mono text-sm w-4 group-hover:text-blue-400 transition-colors">{i + 1}.</span>
-                    <select 
-                      value={val} onChange={(e) => handleOrderChange(i, e.target.value)}
-                      className="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-100 outline-none transition-all cursor-pointer hover:bg-white"
-                    >
-                      <option value="">-- Выберите раздел --</option>
-                      {reportSections.map(rs => <option key={rs} value={rs}>{rs}</option>)}
-                    </select>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Exercise 3 */}
-            <section className="space-y-8">
-              <div className="flex items-center gap-3">
-                <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg shadow-blue-200">2</span>
-                <h3 className="text-lg font-bold text-slate-800">Formal Tone Rewriting</h3>
-              </div>
-              
-              <div className="space-y-10">
-                {[
-                  { id: 'q1', label: 'PURPOSE', text: '"I\'m checking if the new filters are actually worth the money."', prompt: 'Start with: The aim of this report is to evaluate...' },
-                  { id: 'q2', label: 'FINDINGS', text: '"The system is better at cleaning water than the old one."', prompt: 'Keywords: Efficiency / Contaminant removal.' },
-                  { id: 'q3', label: 'ANALYSIS', text: '"The machines break a lot and fixing them is expensive."', prompt: 'Keywords: Operational costs / Durability.' },
-                  { id: 'q6', label: 'RECOMMENDATION', text: '"We should buy more of these for other towns."', prompt: 'Start with: It is recommended that further investment...' }
-                ].map((item) => (
-                  <div key={item.id} className="space-y-3">
-                    <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] font-black text-blue-500 tracking-widest">{item.label}</span>
-                      <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded italic">{item.prompt}</span>
-                    </div>
-                    <p className="text-sm text-slate-700 font-medium pl-4 border-l-4 border-blue-100 leading-relaxed">{item.text}</p>
-                    <textarea 
-                      className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-sm shadow-inner"
-                      rows="3" placeholder="Введите ваш формальный вариант..."
-                      value={rewriting[item.id]} onChange={(e) => setRewriting({...rewriting, [item.id]: e.target.value})}
-                    />
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Submission Section */}
-            <div className="pt-10 border-t border-slate-100">
-              <div className="bg-slate-900 p-8 rounded-[2rem] flex flex-col md:flex-row items-end gap-6 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                <div className="flex-1 w-full relative z-10">
-                  <label className="block text-xs font-bold text-slate-500 mb-3 uppercase tracking-[0.2em]">Ф.И.О. Студента</label>
-                  <input 
-                    type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)}
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-2xl focus:ring-4 focus:ring-blue-500 outline-none text-white placeholder-slate-500 transition-all"
-                    placeholder="Введите имя для отправки работы..."
-                  />
                 </div>
-                <button 
-                  type="submit" 
-                  className="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-xl active:scale-95 relative z-10"
-                >
-                  ОТПРАВИТЬ ОТВЕТЫ
-                </button>
-              </div>
-              {status && (
-                <div className={`mt-6 p-4 rounded-xl text-center text-sm font-bold ${status.includes('Успешно') ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
-                   {status}
-                </div>
-              )}
-            </div>
-          </form>
-        )}
-        <footer className="text-center p-8 text-slate-400 text-[10px] uppercase tracking-[0.3em]">
-          Technical English Training &bull; Infrastructure Dept &bull; 2026
-        </footer>
-      </div>
-    </div>
-  );
-}
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
