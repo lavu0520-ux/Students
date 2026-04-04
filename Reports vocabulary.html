@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2 Engineering Reports — Vocabulary Worksheet</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Syne',sans-serif;background:#f4f6fb;color:#1a1a2e;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1rem 4rem}
+.top-bar{background:#1F3864;color:#fff;padding:1.2rem 2rem;border-radius:12px;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.top-bar h1{font-size:20px;font-weight:700;letter-spacing:.02em}
+.top-bar span{font-size:13px;opacity:.7;font-family:'Source Serif 4',serif;font-style:italic}
+.progress-bar{height:5px;background:#dde3f0;border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:#2E74B5;border-radius:3px;transition:width .4s}
+.tab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:7px 16px;border-radius:8px;border:1.5px solid #c5cfe8;font-size:13px;font-family:'Syne',sans-serif;cursor:pointer;background:#fff;color:#555;transition:.15s}
+.tab.active{background:#1F3864;color:#fff;border-color:#1F3864}
+.tab:hover:not(.active){background:#eef1fb}
+.section{display:none}.section.active{display:block}
+h2{font-size:20px;font-weight:700;color:#1F3864;margin-bottom:4px}
+.sub{font-size:13px;color:#666;font-family:'Source Serif 4',serif;font-style:italic;margin-bottom:1.2rem}
+.card{background:#fff;border:1px solid #dde3f0;border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;margin-bottom:8px;letter-spacing:.04em}
+.chip-lab{background:#DEEAF1;color:#1F3864}
+.chip-field{background:#E2EFDA;color:#375623}
+.chip-inc{background:#FFF2CC;color:#7B4F00}
+.chip-safe{background:#FCE4D6;color:#833C00}
+.chip-feas{background:#EDE7F6;color:#4527A0}
+.chip-prog{background:#E1F5EE;color:#085041}
+.report-title{font-size:16px;font-weight:600;color:#1F3864;margin-bottom:5px}
+.report-def{font-size:14px;color:#444;margin-bottom:8px}
+.kv-label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.kv-text{font-size:13px;color:#555;font-family:'Source Serif 4',serif;font-style:italic}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.pill{padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid #c5cfe8;background:#fff;color:#555;font-family:'Syne',sans-serif;transition:.15s}
+.pill.on{background:#1F3864;color:#fff;border-color:#1F3864}
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+@media(max-width:540px){.vocab-grid{grid-template-columns:1fr}}
+.vocab-card{background:#fff;border-radius:10px;padding:1rem;border:1px solid #dde3f0}
+.vocab-term{font-size:15px;font-weight:600;color:#1F3864;margin-bottom:2px}
+.vocab-pos{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.vocab-def{font-size:13px;color:#444;line-height:1.5}
+.vocab-ex{font-size:12px;color:#777;font-family:'Source Serif 4',serif;font-style:italic;margin-top:6px;border-left:2px solid #2E74B5;padding-left:8px}
+.stage-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.stage-tab{padding:5px 12px;border-radius:8px;border:1px solid #c5cfe8;font-size:12px;cursor:pointer;background:#fff;color:#555;font-family:'Syne',sans-serif;transition:.15s}
+.stage-tab.on{background:#2E74B5;color:#fff;border-color:#2E74B5}
+.score-box{background:#DEEAF1;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:14px}
+.score-num{font-size:28px;font-weight:700;color:#1F3864}
+.score-lbl{font-size:13px;color:#555}
+.q-block{margin-bottom:1.2rem}
+.q-label{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.q-text{font-size:15px;color:#1a1a2e;margin-bottom:10px}
+.opt-row{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:7px 14px;border-radius:8px;border:1.5px solid #c5cfe8;font-size:13px;cursor:pointer;background:#fff;color:#1a1a2e;font-family:'Syne',sans-serif;transition:.15s}
+.opt:hover{background:#eef1fb}
+.opt.sel{background:#DEEAF1;color:#1F3864;border-color:#2E74B5}
+.opt.correct{background:#E2EFDA;color:#375623;border-color:#70AD47}
+.opt.wrong{background:#FCE4D6;color:#833C00;border-color:#FF7043}
+.feedback{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+.feedback.show{display:block}
+.fb-ok{background:#E2EFDA;color:#375623}
+.fb-no{background:#FCE4D6;color:#833C00}
+.tip{font-size:13px;color:#555;padding:10px 14px;border-left:3px solid #2E74B5;background:#DEEAF1;border-radius:0 8px 8px 0;margin-bottom:1rem;font-family:'Source Serif 4',serif;font-style:italic}
+.match-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.match-term{min-width:180px;font-size:14px;font-weight:600;color:#1F3864}
+.match-icon{font-size:14px;min-width:20px;color:#999}
+.match-sel{flex:1;min-width:200px;padding:7px 10px;border:1.5px solid #c5cfe8;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;background:#fff;color:#1a1a2e}
+.rb-section{border:1px solid #dde3f0;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.rb-head{background:#1F3864;padding:8px 14px;font-size:12px;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+.rb-head span.hint{font-size:11px;opacity:.6;font-weight:400}
+textarea.rb-ta{width:100%;border:none;background:#fff;font-size:14px;font-family:'Source Serif 4',serif;color:#1a1a2e;line-height:1.7;resize:vertical;padding:12px 14px;outline:none;min-height:70px}
+.phrase-bank{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid #eef1fb;background:#f8f9fd}
+.phrase{padding:4px 10px;background:#fff;border:1px solid #c5cfe8;border-radius:12px;font-size:12px;cursor:pointer;color:#555;transition:.15s;font-family:'Source Serif 4',serif;font-style:italic}
+.phrase:hover{background:#DEEAF1;color:#1F3864;border-color:#2E74B5}
+.final-preview{background:#fff;border:1px solid #dde3f0;border-radius:12px;padding:2rem;font-family:'Source Serif 4',serif;line-height:1.8;margin-top:1.5rem}
+.final-preview h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;text-align:center;margin-bottom:4px;color:#1F3864}
+.final-preview .meta{text-align:center;font-size:13px;color:#888;margin-bottom:1.2rem;border-bottom:1px solid #dde3f0;padding-bottom:1rem}
+.final-preview h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#2E74B5;margin:1.2rem 0 .3rem}
+.final-preview p{font-size:15px;color:#1a1a2e}
+.checklist{list-style:none;margin-bottom:1.5rem;border:1px solid #dde3f0;border-radius:10px;overflow:hidden}
+.checklist li{font-size:14px;color:#1a1a2e;padding:10px 14px;border-bottom:1px solid #eef1fb;display:flex;align-items:center;gap:10px;cursor:pointer;background:#fff;transition:.1s}
+.checklist li:last-child{border-bottom:none}
+.checklist li:hover{background:#f8f9fd}
+.checklist li .ci{width:20px;height:20px;border-radius:5px;border:1.5px solid #c5cfe8;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:.15s}
+.checklist li.done .ci{background:#E2EFDA;border-color:#70AD47;color:#375623}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:1.5px solid #c5cfe8;font-size:14px;font-family:'Syne',sans-serif;cursor:pointer;background:#fff;color:#1a1a2e;transition:.15s}
+.btn:hover{background:#eef1fb}
+.btn-primary{background:#1F3864;color:#fff;border-color:#1F3864}
+.btn-primary:hover{background:#2E74B5;border-color:#2E74B5}
+select,input[type=text]{padding:8px 12px;border:1.5px solid #c5cfe8;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;background:#fff;color:#1a1a2e;outline:none}
+select:focus,input:focus{border-color:#2E74B5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <h1>Engineering English — B2 &nbsp;|&nbsp; Report Types Worksheet</h1>
+    <span>Interactive vocabulary &amp; writing practice</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:16.6%"></div></div>
+  <div class="tab-row" id="tabRow">
+    <button class="tab active" onclick="goTab(0)">1 Report Types</button>
+    <button class="tab" onclick="goTab(1)">2 Vocabulary</button>
+    <button class="tab" onclick="goTab(2)">3 Multiple Choice</button>
+    <button class="tab" onclick="goTab(3)">4 Gap Fill</button>
+    <button class="tab" onclick="goTab(4)">5 Matching</button>
+    <button class="tab" onclick="goTab(5)">6 Build a Report</button>
+  </div>
+
+  <div class="section active" id="s0">
+    <h2>Types of engineering reports</h2>
+    <p class="sub">Study the six main report types engineers write at B2 level</p>
+    <div class="pill-row" id="rtypeFilter">
+      <button class="pill on" onclick="filterType('all',this)">All</button>
+      <button class="pill" onclick="filterType('lab',this)">Laboratory</button>
+      <button class="pill" onclick="filterType('field',this)">Field</button>
+      <button class="pill" onclick="filterType('incident',this)">Incident</button>
+      <button class="pill" onclick="filterType('safety',this)">Safety</button>
+      <button class="pill" onclick="filterType('feasibility',this)">Feasibility</button>
+      <button class="pill" onclick="filterType('progress',this)">Progress</button>
+    </div>
+    <div id="rtypeCards"></div>
+    <button class="btn btn-primary" onclick="goTab(1)">Next: Vocabulary →</button>
+  </div>
+
+  <div class="section" id="s1">
+    <h2>Key vocabulary</h2>
+    <p class="sub">40 essential terms for technical report writing</p>
+    <div class="stage-tabs" id="vocabCats">
+      <button class="stage-tab on" onclick="filterVocab('all',this)">All</button>
+      <button class="stage-tab" onclick="filterVocab('structure',this)">Structure</button>
+      <button class="stage-tab" onclick="filterVocab('language',this)">Language</button>
+      <button class="stage-tab" onclick="filterVocab('analysis',this)">Analysis</button>
+      <button class="stage-tab" onclick="filterVocab('hedging',this)">Hedging</button>
+    </div>
+    <div class="vocab-grid" id="vocabGrid"></div>
+    <button class="btn btn-primary" onclick="goTab(2)">Next: Multiple Choice →</button>
+  </div>
+
+  <div class="section" id="s2">
+    <h2>Multiple choice</h2>
+    <p class="sub">Choose the best word or phrase to complete each sentence</p>
+    <div class="score-box"><div class="score-num" id="mcScore">0/8</div><div class="score-lbl">correct answers</div></div>
+    <div id="mcQuestions"></div>
+    <button class="btn btn-primary" onclick="goTab(3)">Next: Gap Fill →</button>
+  </div>
+
+  <div class="section" id="s3">
+    <h2>Gap fill</h2>
+    <p class="sub">Type the correct word from the box to complete each sentence</p>
+    <div class="tip">Word bank: <strong>anomaly · corroborate · mitigation · feasibility · scope · stakeholders · remediation · incipient</strong></div>
+    <div id="gapQuestions"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem">
+      <button class="btn" onclick="checkGaps()">Check answers</button>
+      <button class="btn btn-primary" onclick="goTab(4)">Next: Matching →</button>
+    </div>
+  </div>
+
+  <div class="section" id="s4">
+    <h2>Matching</h2>
+    <p class="sub">Match each term to the correct definition using the dropdowns</p>
+    <div id="matchRows"></div>
+    <button class="btn" onclick="checkMatch()">Check matching</button>
+    <div class="feedback" id="matchFeedback" style="margin-top:10px"></div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="goTab(5)">Next: Build a Report →</button>
+  </div>
+
+  <div class="section" id="s5">
+    <h2>Build your report</h2>
+    <p class="sub">Click a phrase to insert it, or type freely in each section. Then generate your final report.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+      <select id="rTypeSelect" onchange="updateReportType()">
+        <option value="lab">Laboratory Report</option>
+        <option value="incident">Incident Report</option>
+        <option value="feasibility">Feasibility Study</option>
+        <option value="progress">Progress Report</option>
+        <option value="safety">Safety Audit Report</option>
+        <option value="field">Field Inspection Report</option>
+      </select>
+      <input type="text" id="rTitle" placeholder="Report title…" style="width:220px">
+      <input type="text" id="rAuthor" placeholder="Author name…" style="width:160px">
+    </div>
+    <div id="reportBuilder"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:1.2rem">
+      <button class="btn btn-primary" onclick="generatePreview()">Generate final report ↗</button>
+      <button class="btn" onclick="clearAll()">Clear all</button>
+    </div>
+    <div id="finalPreview" style="display:none"></div>
+    <div id="checklist" style="display:none;margin-top:2rem">
+      <h2 style="margin-bottom:.3rem">Self-assessment checklist</h2>
+      <p class="sub">Tick each item once you are satisfied</p>
+      <ul class="checklist" id="checkItems"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const TABS=document.querySelectorAll('.tab');
+const SECTIONS=document.querySelectorAll('.section');
+function goTab(i){
+  TABS.forEach((t,j)=>t.classList.toggle('active',j===i));
+  SECTIONS.forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.getElementById('progFill').style.width=((i+1)/6*100)+'%';
+  window.scrollTo(0,0);
+}
+const REPORT_TYPES=[
+  {id:'lab',label:'Laboratory report',chip:'chip-lab',icon:'⚗',def:'Documents experiments conducted in a controlled environment. Reports test conditions, methodology, data collected, and conclusions.',sections:'Abstract · Introduction · Methodology · Results & Discussion · Conclusion · References',key:'objective, hypothesis, apparatus, procedure, observation, deviation, uncertainty, reproducibility'},
+  {id:'field',label:'Field inspection report',chip:'chip-field',icon:'🏗',def:'Records observations made on-site. Used to document the condition of structures, equipment, or construction progress.',sections:'Site Details · Scope of Inspection · Findings · Deficiencies · Recommendations · Photographs',key:'site, as-built, deficiency, non-conformance, access, compliance, visual inspection, remediation'},
+  {id:'incident',label:'Incident report',chip:'chip-inc',icon:'⚠️',def:'Formally documents unplanned events such as accidents, near-misses, or equipment failures.',sections:'Incident Summary · Timeline · Root Cause Analysis · Contributing Factors · Corrective Actions',key:'root cause, contributing factor, corrective action, near-miss, severity, timeline, recurrence'},
+  {id:'safety',label:'Safety audit report',chip:'chip-safe',icon:'🛡️',def:'Evaluates compliance with safety regulations and identifies hazards in the workplace.',sections:'Executive Summary · Scope · Hazard Assessment · Non-compliances · Risk Rating · Action Plan',key:'hazard, risk matrix, mitigation, PPE, regulatory compliance, residual risk, likelihood, consequence'},
+  {id:'feasibility',label:'Feasibility study',chip:'chip-feas',icon:'📊',def:'Assesses whether a proposed project or solution is technically, economically, and operationally viable.',sections:'Executive Summary · Background · Technical Analysis · Cost-Benefit · Constraints · Recommendation',key:'viable, stakeholder, constraint, benchmark, capital cost, operational expenditure, scenario, trade-off'},
+  {id:'progress',label:'Progress report',chip:'chip-prog',icon:'📈',def:'Provides regular updates on the status of an ongoing project against planned milestones.',sections:'Overview · Milestones Achieved · Current Status · Issues & Risks · Next Steps · Budget Summary',key:'milestone, deliverable, schedule variance, critical path, KPI, contingency, percentage complete, risk register'},
+];
+function filterType(cat,el){
+  document.querySelectorAll('#rtypeFilter .pill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  renderReportTypes(cat);
+}
+function renderReportTypes(cat='all'){
+  const c=document.getElementById('rtypeCards');
+  c.innerHTML='';
+  REPORT_TYPES.filter(r=>cat==='all'||r.id===cat).forEach(r=>{
+    c.innerHTML+=`<div class="card"><span class="chip ${r.chip}">${r.label.toUpperCase()}</span><div class="report-title">${r.icon} ${r.label}</div><div class="report-def">${r.def}</div><div class="kv-label">Typical sections</div><div class="kv-text" style="margin-bottom:8px">${r.sections}</div><div class="kv-label">Key vocabulary</div><div class="kv-text">${r.key}</div></div>`;
+  });
+}
+renderReportTypes();
+const VOCAB=[
+  {t:'abstract',p:'n.',d:'A brief summary of the entire report, including purpose, method, results, and conclusion.',e:'"The abstract should not exceed 250 words."',c:'structure'},
+  {t:'executive summary',p:'n.',d:'A concise overview for decision-makers who may not read the full report.',e:'"The executive summary highlights key findings and recommendations."',c:'structure'},
+  {t:'scope',p:'n.',d:'The boundaries and extent of what a report covers.',e:'"The scope of this study is limited to the northern pipeline section."',c:'structure'},
+  {t:'appendix',p:'n.',d:'Supplementary material attached at the end of a report.',e:'"Raw data is provided in Appendix B."',c:'structure'},
+  {t:'hypothesis',p:'n.',d:'A testable prediction made before an experiment.',e:'"Our hypothesis was that increased pressure would reduce flow rate."',c:'structure'},
+  {t:'methodology',p:'n.',d:'The systematic plan explaining how data was collected and analysed.',e:'"Section 3 describes the methodology employed in this study."',c:'structure'},
+  {t:'findings',p:'n. pl.',d:'The information or facts discovered during an investigation.',e:'"The findings indicate a significant thermal variance."',c:'structure'},
+  {t:'deliverable',p:'n.',d:'A tangible output or result to be produced by a project stage.',e:'"The final report is the main deliverable for Phase 2."',c:'structure'},
+  {t:'critical path',p:'n.',d:'The longest sequence of dependent tasks that determines project duration.',e:'"Any delay on the critical path will affect the handover date."',c:'structure'},
+  {t:'root cause',p:'n.',d:'The fundamental reason that led to a problem or failure.',e:'"The root cause was identified as corrosion in the junction box."',c:'analysis'},
+  {t:'corrective action',p:'n.',d:'A step taken to eliminate the cause of a detected failure.',e:'"Corrective actions must be implemented within 30 days."',c:'analysis'},
+  {t:'anomaly',p:'n.',d:'An observation that deviates from what is expected.',e:'"An anomaly was detected in the pressure readings on day 3."',c:'analysis'},
+  {t:'deviation',p:'n.',d:'A departure from a standard or expected value.',e:'"A deviation of ±5% is within acceptable limits."',c:'analysis'},
+  {t:'corroborate',p:'v.',d:'To confirm or support with additional evidence.',e:'"These results corroborate the findings of the previous study."',c:'analysis'},
+  {t:'infer',p:'v.',d:'To draw a conclusion from evidence and reasoning.',e:'"We can infer that the failure was stress-induced."',c:'analysis'},
+  {t:'quantify',p:'v.',d:'To express something as a number or measurable amount.',e:'"The report attempts to quantify the risk at each stage."',c:'analysis'},
+  {t:'benchmark',p:'n.',d:'A standard point of reference for comparison.',e:'"Results were compared against industry benchmarks."',c:'analysis'},
+  {t:'mitigation',p:'n.',d:'Actions taken to reduce the severity of a risk.',e:'"Mitigation strategies were proposed for each identified hazard."',c:'analysis'},
+  {t:'feasibility',p:'n.',d:'Whether a plan is possible and practical given resources and constraints.',e:'"A full feasibility assessment was conducted before approval."',c:'analysis'},
+  {t:'remediation',p:'n.',d:'The process of correcting or reversing environmental or structural damage.',e:'"Soil remediation will begin in Q2."',c:'analysis'},
+  {t:'non-conformance',p:'n.',d:'Failure to meet a specified requirement or standard.',e:'"Three non-conformances were identified during the audit."',c:'analysis'},
+  {t:'contributing factor',p:'n.',d:'A secondary cause that adds to, but does not alone cause, an incident.',e:'"Fatigue was identified as a contributing factor."',c:'analysis'},
+  {t:'incipient',p:'adj.',d:'At an early stage; beginning to develop.',e:'"An incipient crack was detected in the weld seam."',c:'analysis'},
+  {t:'risk matrix',p:'n.',d:'A grid used to evaluate risks by plotting likelihood against consequence.',e:'"Each hazard was plotted on the risk matrix."',c:'analysis'},
+  {t:'it is evident that',p:'phrase',d:'Used to present information as clearly supported by evidence.',e:'"It is evident that the load exceeded design parameters."',c:'language'},
+  {t:'the data suggest(s)',p:'phrase',d:'A neutral, hedged way to link evidence and conclusion.',e:'"The data suggest a correlation between temperature and failure rate."',c:'language'},
+  {t:'in accordance with',p:'prep. phrase',d:'Following or complying with a rule, standard, or instruction.',e:'"Tests were conducted in accordance with ISO 9001."',c:'language'},
+  {t:'it should be noted that',p:'phrase',d:'Draws the reader\'s attention to important information.',e:'"It should be noted that the sample size was limited."',c:'language'},
+  {t:'as illustrated in Figure',p:'phrase',d:'Directs the reader to a visual element.',e:'"As illustrated in Figure 3, the gradient increases sharply."',c:'language'},
+  {t:'the purpose of this report',p:'phrase',d:'Standard opening phrase to state the report\'s aim.',e:'"The purpose of this report is to assess structural integrity."',c:'language'},
+  {t:'stakeholder',p:'n.',d:'Anyone with an interest or concern in the project or its outcome.',e:'"All stakeholders were consulted during the planning phase."',c:'language'},
+  {t:'as-built',p:'adj.',d:'Describes drawings that reflect actual condition after construction.',e:'"As-built drawings must be submitted within 14 days."',c:'language'},
+  {t:'likelihood',p:'n.',d:'The probability that something will happen.',e:'"The likelihood of failure was rated as high."',c:'hedging'},
+  {t:'residual risk',p:'n.',d:'The risk that remains after controls have been applied.',e:'"Residual risk is deemed acceptable by the safety officer."',c:'hedging'},
+  {t:'it appears that',p:'phrase',d:'Hedged language expressing a tentative conclusion.',e:'"It appears that vibration is a contributing factor."',c:'hedging'},
+  {t:'may indicate',p:'phrase',d:'Carefully non-committal language for uncertain findings.',e:'"The readings may indicate micro-fracturing."',c:'hedging'},
+  {t:'further investigation is required',p:'phrase',d:'Acknowledges the limits of current evidence.',e:'"Further investigation is required to confirm the hypothesis."',c:'hedging'},
+  {t:'it is recommended that',p:'phrase',d:'Standard way to present recommendations formally.',e:'"It is recommended that the valve be replaced immediately."',c:'hedging'},
+  {t:'uncertainty',p:'n.',d:'The estimated range within which a true value is expected to lie.',e:'"Measurement uncertainty is ±0.02 mm."',c:'hedging'},
+  {t:'it is recommended that',p:'phrase',d:'Standard formal structure for giving recommendations.',e:'"It is recommended that all valves be inspected quarterly."',c:'hedging'},
+];
+function filterVocab(cat,el){
+  document.querySelectorAll('#vocabCats .stage-tab').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  renderVocab(cat);
+}
+function renderVocab(cat='all'){
+  const g=document.getElementById('vocabGrid');
+  const unique=[...new Map(VOCAB.filter(v=>cat==='all'||v.c===cat).map(v=>[v.t,v])).values()];
+  g.innerHTML=unique.map(v=>`<div class="vocab-card"><div class="vocab-term">${v.t}</div><div class="vocab-pos">${v.p} · ${v.c}</div><div class="vocab-def">${v.d}</div><div class="vocab-ex">${v.e}</div></div>`).join('');
+}
+renderVocab();
+const MC_QS=[
+  {q:'The engineer was asked to ________ the structural damage before repairs could begin.',opts:['assess','infer','mitigate','corroborate'],ans:0,exp:'Assess means to evaluate the nature or quality of something — essential before repairs.'},
+  {q:'All tests were conducted ________ ISO 14001 environmental standards.',opts:['in accordance with','by means of','in conformity of','according to be'],ans:0,exp:'"In accordance with" is the standard prepositional phrase for compliance with standards.'},
+  {q:'The ________ of this report is confined to the southern wing of the facility.',opts:['scope','appendix','hypothesis','abstract'],ans:0,exp:'"Scope" defines the boundaries of what is included in a report.'},
+  {q:'________ further investigation, the cause of the anomaly remains unclear.',opts:['Pending','Without','Unless','Despite'],ans:0,exp:'"Pending" means while awaiting something — common in technical reports.'},
+  {q:'The ________ crack in the support beam was not visible to the naked eye.',opts:['incipient','residual','deviant','feasible'],ans:0,exp:'"Incipient" describes something at an early stage of development.'},
+  {q:'It ________ that elevated moisture levels contributed to the corrosion.',opts:['appears','seems like','is seeming','looks'],ans:0,exp:'"It appears that" is the correct hedged structure for uncertain conclusions.'},
+  {q:'The risk ________ plots the likelihood of an event against its potential impact.',opts:['matrix','register','audit','benchmark'],ans:0,exp:'A risk matrix is a standard tool for assessing and displaying risks.'},
+  {q:'Fatigue was identified as a ________ ________ to the accident.',opts:['contributing factor','causal element','root reason','prime cause'],ans:0,exp:'"Contributing factor" is the technical term for a secondary cause.'},
+];
+let mcAnswered={};
+function renderMC(){
+  const c=document.getElementById('mcQuestions');
+  c.innerHTML='';
+  MC_QS.forEach((q,i)=>{
+    c.innerHTML+=`<div class="q-block card"><div class="q-label">Question ${i+1}</div><p class="q-text">${q.q}</p><div class="opt-row">${q.opts.map((o,j)=>`<button class="opt" onclick="checkMC(${i},${j})" id="mc${i}_${j}">${o}</button>`).join('')}</div><div class="feedback" id="mcfb${i}"></div></div>`;
+  });
+}
+function checkMC(qi,oi){
+  if(mcAnswered[qi]!==undefined)return;
+  mcAnswered[qi]=oi;
+  const q=MC_QS[qi];
+  document.getElementById(`mc${qi}_${oi}`).classList.add(oi===q.ans?'correct':'wrong');
+  if(oi!==q.ans)document.getElementById(`mc${qi}_${q.ans}`).classList.add('correct');
+  const fb=document.getElementById('mcfb'+qi);
+  fb.className='feedback show '+(oi===q.ans?'fb-ok':'fb-no');
+  fb.textContent=(oi===q.ans?'Correct! ':'Incorrect. ')+q.exp;
+  const correct=Object.entries(mcAnswered).filter(([k,v])=>MC_QS[k].ans===parseInt(v)).length;
+  document.getElementById('mcScore').textContent=correct+'/'+Object.keys(mcAnswered).length;
+}
+renderMC();
+const GAP_QS=[
+  {b:'An unexpected reading was recorded — the engineers classified it as an',a:'that required further analysis.',ans:'anomaly'},
+  {b:'The data from both teams',a:'the initial findings, increasing confidence in the results.',ans:'corroborate'},
+  {b:'The',a:'study concluded that the proposed bridge was structurally and financially viable.',ans:'feasibility'},
+  {b:'Flood barriers and drainage channels were identified as key',a:'measures to reduce the risk of property damage.',ans:'mitigation'},
+  {b:'The',a:'of the inspection covers all load-bearing elements within Building A.',ans:'scope'},
+  {b:'All relevant',a:', including residents, local authorities, and the client, were informed before work began.',ans:'stakeholders'},
+  {b:'Soil',a:'work began in the affected area after contamination levels exceeded legal limits.',ans:'remediation'},
+  {b:'An',a:'crack was identified in the weld seam during the ultrasonic scan.',ans:'incipient'},
+];
+function renderGaps(){
+  const c=document.getElementById('gapQuestions');
+  c.innerHTML='';
+  GAP_QS.forEach((q,i)=>{
+    c.innerHTML+=`<div class="q-block card"><div class="q-label">Sentence ${i+1}</div><p class="q-text">${q.b} <input id="gap${i}" style="width:130px;border:none;border-bottom:2px solid #c5cfe8;font-family:'Source Serif 4',serif;font-size:15px;background:transparent;color:#1a1a2e;padding:2px 4px;outline:none" placeholder="…"> ${q.a}</p><div class="feedback" id="gfb${i}"></div></div>`;
+  });
+}
+function checkGaps(){
+  GAP_QS.forEach((q,i)=>{
+    const inp=document.getElementById('gap'+i);
+    const ok=inp.value.trim().toLowerCase()===q.ans;
+    inp.style.borderColor=ok?'#70AD47':'#FF7043';
+    inp.style.color=ok?'#375623':'#833C00';
+    const fb=document.getElementById('gfb'+i);
+    fb.className='feedback show '+(ok?'fb-ok':'fb-no');
+    fb.textContent=ok?'Correct!':'Answer: '+q.ans;
+  });
+}
+renderGaps();
+const MATCH_TERMS=[
+  {term:'Appendix',def:'Supplementary material placed at the end of a report'},
+  {term:'Root cause',def:'The fundamental underlying reason for a failure or problem'},
+  {term:'Benchmark',def:'A standard reference point used for comparison'},
+  {term:'Deliverable',def:'A tangible result or output produced by a project phase'},
+  {term:'Non-conformance',def:'A failure to comply with a specified requirement or standard'},
+  {term:'Critical path',def:'The longest chain of tasks that determines overall project duration'},
+];
+const MATCH_DEFS=[...MATCH_TERMS.map(m=>m.def)].sort(()=>Math.random()-.5);
+function renderMatch(){
+  const c=document.getElementById('matchRows');
+  c.innerHTML='';
+  MATCH_TERMS.forEach((m,i)=>{
+    c.innerHTML+=`<div class="match-row"><div class="match-term">${m.term}</div><span class="match-icon" id="micon${i}">→</span><select class="match-sel" id="msel${i}"><option value="">-- select definition --</option>${MATCH_DEFS.map(d=>`<option value="${d}">${d}</option>`).join('')}</select></div>`;
+  });
+}
+function checkMatch(){
+  let score=0;
+  MATCH_TERMS.forEach((m,i)=>{
+    const ok=document.getElementById('msel'+i).value===m.def;
+    if(ok)score++;
+    const icon=document.getElementById('micon'+i);
+    icon.textContent=ok?'✓':'✗';
+    icon.style.color=ok?'#375623':'#833C00';
+  });
+  const fb=document.getElementById('matchFeedback');
+  fb.className='feedback show '+(score===MATCH_TERMS.length?'fb-ok':'fb-no');
+  fb.textContent=`You matched ${score} of ${MATCH_TERMS.length} correctly.`+(score<MATCH_TERMS.length?' Review the vocabulary and try again.':' Excellent work!');
+}
+renderMatch();
+const REPORT_SECTIONS={lab:['Abstract','Introduction','Hypothesis','Methodology','Results','Discussion','Conclusion','References'],incident:['Incident Summary','Timeline of Events','Root Cause Analysis','Contributing Factors','Corrective Actions','Preventive Measures'],feasibility:['Executive Summary','Background & Objectives','Technical Analysis','Cost-Benefit Analysis','Constraints & Risks','Recommendation'],progress:['Overview','Milestones Achieved','Current Status','Issues & Risks','Budget Summary','Next Steps'],safety:['Executive Summary','Scope of Audit','Hazard Assessment','Non-conformances Found','Risk Rating','Action Plan'],field:['Site Details','Scope of Inspection','Findings','Deficiencies','Recommendations','Photographic Evidence']};
+const PHRASES={lab:{Abstract:['The purpose of this report is to…','The experiment investigated…','Results indicate that…'],Introduction:['This report presents the findings of…','The aim of this study was to…'],Hypothesis:['It was hypothesised that…','We predicted that…'],Methodology:['Tests were conducted in accordance with…','Data were collected at intervals of…'],Results:['As illustrated in Figure 1,…','An anomaly was observed at…'],Discussion:['It appears that…','Further investigation is required to confirm…'],Conclusion:['It is evident that…','It is recommended that…'],References:['All sources were cited in accordance with IEEE format.']},incident:{'Incident Summary':['On [date], an incident occurred in which…','This report documents the circumstances of…'],'Timeline of Events':['At approximately [time],…','Prior to the incident,…'],'Root Cause Analysis':['The root cause was identified as…','Analysis revealed that…'],'Contributing Factors':['A contributing factor was…','Fatigue was identified as a secondary contributing factor.'],'Corrective Actions':['It is recommended that…','The following measures are proposed to prevent recurrence:'],'Preventive Measures':['A review of maintenance schedules is recommended.','Staff training should be reinforced in the area of…']},feasibility:{'Executive Summary':['This report assesses the feasibility of…','Key findings are summarised below.'],'Background & Objectives':['The project aims to…','Stakeholders have identified the following objectives:'],'Technical Analysis':['From a technical perspective, the proposed solution is…'],'Cost-Benefit Analysis':['The estimated capital cost is…','Operational expenditure is projected at…'],'Constraints & Risks':['Key constraints include…','Mitigation strategies have been proposed for each risk.'],Recommendation:['It is recommended that Option B be adopted.','Based on the analysis, the proposed project is deemed viable.']},progress:{Overview:['This progress report covers the period from…','The project is currently…% complete.'],'Milestones Achieved':['The following milestones were reached on schedule:','Design approval was obtained on [date].'],'Current Status':['Work is currently ongoing on…','The project is on track / behind schedule due to…'],'Issues & Risks':['A risk has been identified relating to…','Contingency measures are in place for…'],'Budget Summary':['Current expenditure stands at…','The project is within budget.'],'Next Steps':['The next milestone is due on…','The following deliverables are planned for next month:']},safety:{'Executive Summary':['This report presents the findings of a safety audit of…'],'Scope of Audit':['The scope of this audit covers…','The following areas were inspected:'],'Hazard Assessment':['The following hazards were identified:','Each hazard was assessed using a risk matrix.'],'Non-conformances Found':['Three non-conformances were identified during the audit.','Immediate corrective action is required for…'],'Risk Rating':['The residual risk is rated as…','The likelihood of occurrence is rated as low/medium/high.'],'Action Plan':['It is recommended that…be completed by…','A follow-up audit will be conducted in…']},field:{'Site Details':['The inspection was carried out at…','Weather conditions at the time of inspection were…'],'Scope of Inspection':['The scope of this inspection covers…','The following elements were assessed:'],Findings:['The following deficiencies were observed:','The structure was found to be in…condition.'],Deficiencies:['A deficiency was noted in the form of…','Corrosion was observed on…'],Recommendations:['It is recommended that…be replaced within…','Immediate action is required to address…'],'Photographic Evidence':['Photographs are appended at the end of this report.','Figure 1 shows the extent of the observed deterioration.']}};
+let currentType='lab';let reportData={};
+function updateReportType(){currentType=document.getElementById('rTypeSelect').value;reportData={};buildReportBuilder();}
+function buildReportBuilder(){
+  const sections=REPORT_SECTIONS[currentType];
+  const phrases=PHRASES[currentType]||{};
+  const c=document.getElementById('reportBuilder');
+  c.innerHTML='';
+  sections.forEach(sec=>{
+    const ps=phrases[sec]||[];
+    const pHTML=ps.map(p=>`<span class="phrase" onclick="insertPhrase('${sec.replace(/'/g,"\\'")}','${p.replace(/'/g,"\\'")}')">${p}</span>`).join('');
+    const key='ta_'+sec.replace(/[\s&]/g,'_');
+    c.innerHTML+=`<div class="rb-section"><div class="rb-head"><span>${sec}</span><span class="hint">click phrase to insert</span></div><div class="rb-body"><textarea class="rb-ta" id="${key}" placeholder="Write your ${sec.toLowerCase()} here…" oninput="saveTA('${sec.replace(/'/g,"\\'")}',this.value)">${reportData[sec]||''}</textarea>${pHTML?`<div class="phrase-bank">${pHTML}</div>`:''}</div></div>`;
+  });
+}
+function saveTA(sec,val){reportData[sec]=val;}
+function insertPhrase(sec,phrase){
+  const key='ta_'+sec.replace(/[\s&]/g,'_');
+  const ta=document.getElementById(key);
+  if(!ta)return;
+  ta.value=ta.value+(ta.value&&!ta.value.endsWith(' ')?' ':'')+phrase;
+  reportData[sec]=ta.value;
+}
+function clearAll(){reportData={};buildReportBuilder();document.getElementById('finalPreview').style.display='none';document.getElementById('checklist').style.display='none';}
+function generatePreview(){
+  const sections=REPORT_SECTIONS[currentType];
+  const title=document.getElementById('rTitle').value||'Engineering Report';
+  const author=document.getElementById('rAuthor').value||'[Author]';
+  const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  let body='';
+  sections.forEach(sec=>{const content=reportData[sec]||'';if(content.trim())body+=`<h3>${sec}</h3><p>${content}</p>`;});
+  const fp=document.getElementById('finalPreview');
+  fp.innerHTML=`<div class="final-preview"><h1>${title}</h1><div class="meta">Author: ${author} &nbsp;|&nbsp; Date: ${today} &nbsp;|&nbsp; ${document.getElementById('rTypeSelect').options[document.getElementById('rTypeSelect').selectedIndex].text}</div>${body||'<p style="color:#888;font-style:italic">No content entered yet. Fill in the sections above.</p>'}</div><div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap"><button class="btn" onclick="window.print()">Print / Save as PDF</button><button class="btn" onclick="copyReport()">Copy to clipboard</button></div>`;
+  fp.style.display='block';
+  renderChecklist();
+  document.getElementById('checklist').style.display='block';
+  fp.scrollIntoView({behavior:'smooth'});
+}
+function copyReport(){
+  const sections=REPORT_SECTIONS[currentType];
+  const title=document.getElementById('rTitle').value||'Engineering Report';
+  const author=document.getElementById('rAuthor').value||'[Author]';
+  let text=title+'\nAuthor: '+author+'\n\n';
+  sections.forEach(sec=>{const content=reportData[sec]||'';if(content.trim())text+=sec.toUpperCase()+'\n'+content+'\n\n';});
+  navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard!'));
+}
+const CHECKLIST_ITEMS=['The report has a clear title and author details','All required sections are present and in the correct order','The scope is clearly defined in the introduction','Passive voice is used appropriately throughout','Hedging language is used where conclusions are uncertain','Technical vocabulary is used accurately and in context','Figures and tables are referenced in the body text','Recommendations are stated using "It is recommended that…"','The report avoids informal language and contractions','All sources are cited and referenced correctly'];
+function renderChecklist(){
+  document.getElementById('checkItems').innerHTML=CHECKLIST_ITEMS.map((item,i)=>`<li id="cli${i}" onclick="toggleCheck(${i})"><div class="ci" id="ci${i}"></div>${item}</li>`).join('');
+}
+function toggleCheck(i){
+  const done=document.getElementById('cli'+i).classList.toggle('done');
+  document.getElementById('ci'+i).textContent=done?'✓':'';
+}
+buildReportBuilder();
+</script>
+</body>
+</html>
