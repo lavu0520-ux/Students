@@ -1,0 +1,282 @@
+import React, { useState, useEffect } from 'react';
+import { initializeApp } from 'firebase/app';
+import { 
+  getAuth, 
+  signInAnonymously, 
+  onAuthStateChanged,
+  signInWithCustomToken
+} from 'firebase/auth';
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  onSnapshot, 
+  query
+} from 'firebase/firestore';
+
+// Firebase Configuration
+const firebaseConfig = JSON.parse(__firebase_config);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [studentName, setStudentName] = useState('');
+  const [status, setStatus] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
+
+  // Worksheet State
+  const [order, setOrder] = useState(['', '', '', '', '', '', '']);
+  const [vocab, setVocab] = useState({
+    viability: '',
+    efficiency: '',
+    mitigation: '',
+    implementation: ''
+  });
+  const [rewriting, setRewriting] = useState({
+    q1: '',
+    q2: '',
+    q3: '',
+    q4: '',
+    q5: ''
+  });
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.error("Auth error:", err);
+      }
+    };
+    initAuth();
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!user || !isAdmin) return;
+    const q = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setSubmissions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+    return () => unsubscribe();
+  }, [user, isAdmin]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!studentName.trim()) return setStatus('Please enter your name.');
+    
+    try {
+      setStatus('Submitting...');
+      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'submissions'), {
+        studentName,
+        order,
+        vocab,
+        rewriting,
+        timestamp: new Date().toLocaleString()
+      });
+      setStatus('Success! Your work has been submitted.');
+      setStudentName('');
+    } catch (err) {
+      setStatus('Error submitting. Try again.');
+    }
+  };
+
+  const handleOrderChange = (index, value) => {
+    const newOrder = [...order];
+    newOrder[index] = value;
+    setOrder(newOrder);
+  };
+
+  const reportSections = [
+    "Executive Summary", "Introduction", "Evaluation Criteria", 
+    "Findings", "Analysis & Discussion", "Conclusion", "Recommendations"
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-100 font-sans p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="bg-blue-900 text-white p-8 rounded-t-2xl flex justify-between items-center shadow-lg">
+          <div>
+            <h1 className="text-2xl font-bold">Report Writing Mastery</h1>
+            <p className="text-blue-200 text-sm italic">Vocabulary, Structure & Formal Tone</p>
+          </div>
+          <button onClick={() => setIsAdmin(!isAdmin)} className="text-xs bg-white/10 px-3 py-1 rounded hover:bg-white/20">
+            {isAdmin ? 'Student View' : 'Teacher Access'}
+          </button>
+        </header>
+
+        {isAdmin ? (
+          <div className="bg-white p-6 rounded-b-2xl shadow-md border">
+            <h2 className="text-xl font-bold mb-4 text-blue-900">Student Results</h2>
+            {submissions.length === 0 ? <p className="text-gray-400 italic">No submissions yet.</p> : (
+              <div className="space-y-4">
+                {submissions.map(s => (
+                  <div key={s.id} className="border p-4 rounded-xl bg-slate-50">
+                    <div className="flex justify-between border-b pb-2 mb-2">
+                      <span className="font-bold text-blue-700">{s.studentName}</span>
+                      <span className="text-xs text-gray-400">{s.timestamp}</span>
+                    </div>
+                    <div className="text-xs space-y-2">
+                      <p><strong>Ex 1 (Order):</strong> {s.order.filter(o => o).join(' → ') || 'Not completed'}</p>
+                      <p><strong>Ex 3 (Rewriting Sample):</strong> {s.rewriting.q1}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="bg-white p-6 md:p-10 rounded-b-2xl shadow-md border space-y-12">
+            
+            {/* Exercise 1: Logical Order */}
+            <section>
+              <div className="flex items-center mb-4">
+                <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 text-sm">1</span>
+                <h3 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Report Structure</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-6 bg-blue-50 p-3 rounded border-l-4 border-blue-400 italic">
+                Arrange the sections in the standard logical order for an evaluation report.
+              </p>
+              <div className="grid gap-3">
+                {order.map((val, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <span className="text-gray-400 font-mono text-sm w-4">{i + 1}.</span>
+                    <select 
+                      value={val} 
+                      onChange={(e) => handleOrderChange(i, e.target.value)}
+                      className="flex-1 p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">-- Choose Section --</option>
+                      {reportSections.map(rs => <option key={rs} value={rs}>{rs}</option>)}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Exercise 2: Technical Vocabulary */}
+            <section>
+              <div className="flex items-center mb-4">
+                <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 text-sm">2</span>
+                <h3 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Technical Terminology</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-6">Define these terms as they relate to infrastructure projects.</p>
+              <div className="space-y-4">
+                {['viability', 'efficiency', 'mitigation', 'implementation'].map(field => (
+                  <div key={field} className="flex flex-col md:flex-row md:items-center gap-2">
+                    <span className="text-sm font-bold w-32 capitalize">{field}:</span>
+                    <input 
+                      type="text" className="flex-1 p-2 border-b-2 border-slate-100 focus:border-blue-500 outline-none text-sm"
+                      value={vocab[field]} onChange={(e) => setVocab({...vocab, [field]: e.target.value})}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Exercise 3: Professional Rewriting */}
+            <section>
+              <div className="flex items-center mb-4">
+                <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 text-sm">3</span>
+                <h3 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Formal Tone Rewriting</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-6 italic">
+                Rewrite the following informal observations into professional report statements.
+              </p>
+              
+              <div className="space-y-8">
+                {/* Q1 */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400">1. INTRODUCTION (Purpose)</p>
+                  <p className="text-sm text-slate-700 font-medium">"I am writing this to see if the new solar pumps are actually working well."</p>
+                  <input 
+                    type="text" placeholder="Start with: The aim of this report is to evaluate..." 
+                    className="w-full p-2 border-b border-blue-200 outline-none text-sm focus:border-blue-500"
+                    value={rewriting.q1} onChange={(e) => setRewriting({...rewriting, q1: e.target.value})}
+                  />
+                </div>
+
+                {/* Q2 */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400">2. FINDINGS (Efficiency)</p>
+                  <p className="text-sm text-slate-700 font-medium">"The new system is much better than the old one at cleaning the water."</p>
+                  <input 
+                    type="text" placeholder="Start with: Compared to the previous system, the new unit demonstrated..." 
+                    className="w-full p-2 border-b border-blue-200 outline-none text-sm focus:border-blue-500"
+                    value={rewriting.q2} onChange={(e) => setRewriting({...rewriting, q2: e.target.value})}
+                  />
+                </div>
+
+                {/* Q3 */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400">3. ANALYSIS (Limitations)</p>
+                  <p className="text-sm text-slate-700 font-medium">"The filters are good, but they break easily and cost a lot to fix."</p>
+                  <input 
+                    type="text" placeholder="Start with: Despite its benefits, the system presents..." 
+                    className="w-full p-2 border-b border-blue-200 outline-none text-sm focus:border-blue-500"
+                    value={rewriting.q3} onChange={(e) => setRewriting({...rewriting, q3: e.target.value})}
+                  />
+                </div>
+
+                {/* Q4 */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400">4. CONCLUSION (Health Impact)</p>
+                  <p className="text-sm text-slate-700 font-medium">"People aren't getting sick as much as they used to."</p>
+                  <input 
+                    type="text" placeholder="Start with: Significant improvements were observed in..." 
+                    className="w-full p-2 border-b border-blue-200 outline-none text-sm focus:border-blue-500"
+                    value={rewriting.q4} onChange={(e) => setRewriting({...rewriting, q4: e.target.value})}
+                  />
+                </div>
+
+                {/* Q5 */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400">5. RECOMMENDATIONS (Future steps)</p>
+                  <p className="text-sm text-slate-700 font-medium">"We should definitely spend more money on this in other parts of the city."</p>
+                  <input 
+                    type="text" placeholder="Start with: It is recommended that further investment be considered in..." 
+                    className="w-full p-2 border-b border-blue-200 outline-none text-sm focus:border-blue-500"
+                    value={rewriting.q5} onChange={(e) => setRewriting({...rewriting, q5: e.target.value})}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Submission Section */}
+            <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-end gap-4">
+              <div className="flex-1 w-full">
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Student Full Name</label>
+                <input 
+                  type="text" 
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none"
+                  placeholder="Enter your name"
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95"
+              >
+                SUBMIT RESULTS
+              </button>
+            </div>
+            {status && <p className="text-center text-sm font-bold text-blue-600 animate-pulse">{status}</p>}
+          </form>
+        )}
+        <footer className="text-center p-8 text-gray-400 text-[10px] uppercase tracking-widest">
+          Infrastructure Training Module &copy; 2026
+        </footer>
+      </div>
+    </div>
+  );
+}
