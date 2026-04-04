@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Report Training</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Имитация Firebase конфигурации для работы внутри одного файла
+        const firebaseConfig = JSON.parse(window.__firebase_config || '{}');
+        const appId = typeof window.__app_id !== 'undefined' ? window.__app_id : 'default-app-id';
+
+        function App() {
+            const [studentName, setStudentName] = useState('');
+            const [status, setStatus] = useState('');
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [order, setOrder] = useState(['', '', '', '', '', '', '']);
+            const [vocab, setVocab] = useState({ viability: '', efficiency: '', mitigation: '', implementation: '' });
+            const [rewriting, setRewriting] = useState({ q1: '', q2: '', q3: '', q4: '', q5: '', q6: '' });
+
+            const reportSections = [
+                "Executive Summary", "Introduction", "Evaluation Criteria", 
+                "Findings", "Analysis & Discussion", "Conclusion", "Recommendations"
+            ];
+
+            const handleOrderChange = (index, value) => {
+                const newOrder = [...order];
+                newOrder[index] = value;
+                setOrder(newOrder);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!studentName.trim()) {
+                    setStatus('Please enter your name.');
+                    return;
+                }
+                // В данной версии мы просто имитируем успех, так как для Firestore нужны ключи окружения
+                setStatus('Success! Your work has been submitted (Demo Mode).');
+                console.log({ studentName, order, vocab, rewriting });
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 font-sans p-4 md:p-8 text-slate-900">
+                    <div className="max-w-4xl mx-auto">
+                        <header className="bg-slate-900 text-white p-8 rounded-t-2xl flex justify-between items-center shadow-xl">
+                            <div>
+                                <h1 className="text-2xl font-bold">Evaluation Report Training</h1>
+                                <p className="text-slate-400 text-sm italic">Advanced Vocabulary & Formal Tone</p>
+                            </div>
+                            <button onClick={() => setIsAdmin(!isAdmin)} className="text-xs border border-slate-700 px-4 py-2 rounded-full hover:bg-slate-800 transition-all">
+                                {isAdmin ? 'Back to Worksheet' : 'Teacher Access'}
+                            </button>
+                        </header>
+
+                        <div className="bg-white p-6 md:p-10 rounded-b-2xl shadow-lg border space-y-12">
+                            {isAdmin ? (
+                                <div className="text-center py-12">
+                                    <h2 className="text-xl font-bold mb-4">Teacher Dashboard</h2>
+                                    <p className="text-slate-500">Submissions will appear here when connected to the database.</p>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-12">
+                                    {/* Exercise 1 */}
+                                    <section>
+                                        <div className="flex items-center mb-4">
+                                            <div className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 shadow-md">1</div>
+                                            <h3 className="text-lg font-bold uppercase tracking-tight">Logical Sequencing</h3>
+                                        </div>
+                                        <div className="grid gap-3">
+                                            {order.map((val, i) => (
+                                                <div key={i} className="flex items-center gap-4">
+                                                    <span className="text-slate-300 font-mono text-sm w-4">{i + 1}.</span>
+                                                    <select 
+                                                        value={val} onChange={(e) => handleOrderChange(i, e.target.value)}
+                                                        className="flex-1 p-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                                                    >
+                                                        <option value="">-- Select Report Section --</option>
+                                                        {reportSections.map(rs => <option key={rs} value={rs}>{rs}</option>)}
+                                                    </select>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+
+                                    {/* Exercise 2 */}
+                                    <section>
+                                        <div className="flex items-center mb-4">
+                                            <div className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 shadow-md">2</div>
+                                            <h3 className="text-lg font-bold uppercase tracking-tight">Technical Vocabulary</h3>
+                                        </div>
+                                        <div className="space-y-4">
+                                            {['viability', 'efficiency', 'mitigation', 'implementation'].map(field => (
+                                                <div key={field} className="flex flex-col md:flex-row md:items-center gap-4">
+                                                    <span className="text-sm font-bold w-32 capitalize">{field}:</span>
+                                                    <input 
+                                                        type="text" placeholder={`Briefly define ${field}...`}
+                                                        className="flex-1 p-2 border-b-2 border-slate-100 focus:border-blue-500 outline-none text-sm transition-colors"
+                                                        value={vocab[field]} onChange={(e) => setVocab({...vocab, [field]: e.target.value})}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+
+                                    {/* Exercise 3 */}
+                                    <section>
+                                        <div className="flex items-center mb-4">
+                                            <div className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 shadow-md">3</div>
+                                            <h3 className="text-lg font-bold uppercase tracking-tight">Professional Rewriting</h3>
+                                        </div>
+                                        <div className="space-y-10">
+                                            {[
+                                                { id: 'q1', label: 'PURPOSE', text: '"I\'m checking if the new filters are actually worth the money."', prompt: 'The aim of this report is to evaluate...' },
+                                                { id: 'q2', label: 'FINDINGS', text: '"The system is better at cleaning water than the old one."', prompt: 'Efficiency / Contaminant removal.' },
+                                                { id: 'q3', label: 'ANALYSIS', text: '"The machines break a lot and fixing them is expensive."', prompt: 'Operational costs / Durability.' },
+                                                { id: 'q4', label: 'CONCLUSION', text: '"People aren\'t getting sick as much now."', prompt: 'Significant improvements / Local health outcomes.' },
+                                                { id: 'q5', label: 'LIMITATIONS', text: '"We couldn\'t test everything because we didn\'t have enough time."', prompt: 'Due to time constraints...' },
+                                                { id: 'q6', label: 'RECOMMENDATION', text: '"We should buy more of these for other towns."', prompt: 'It is recommended that further investment...' }
+                                            ].map((item) => (
+                                                <div key={item.id} className="space-y-3">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[10px] font-black text-blue-500 tracking-widest">{item.label}</span>
+                                                        <span className="text-[10px] text-slate-300 italic">{item.prompt}</span>
+                                                    </div>
+                                                    <p className="text-sm font-medium pl-4 border-l-2 border-slate-200">{item.text}</p>
+                                                    <textarea 
+                                                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-blue-100 text-sm"
+                                                        rows="2" placeholder="Enter formal version..."
+                                                        value={rewriting[item.id]} onChange={(e) => setRewriting({...rewriting, [item.id]: e.target.value})}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+
+                                    <div className="pt-10 border-t">
+                                        <div className="bg-slate-900 p-8 rounded-3xl flex flex-col md:flex-row items-end gap-6 shadow-2xl">
+                                            <div className="flex-1 w-full">
+                                                <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Student Full Name</label>
+                                                <input 
+                                                    type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)}
+                                                    className="w-full p-4 bg-white rounded-2xl outline-none text-slate-900"
+                                                    placeholder="Enter your name..."
+                                                />
+                                            </div>
+                                            <button type="submit" className="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-lg">
+                                                SUBMIT WORK
+                                            </button>
+                                        </div>
+                                        {status && <p className="text-center mt-4 text-sm font-bold text-blue-600 animate-pulse">{status}</p>}
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
