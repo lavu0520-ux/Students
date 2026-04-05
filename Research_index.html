@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Research & Vocabulary Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .task-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem; transition: all 0.3s ease; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .input-underline { border-bottom: 2px solid #cbd5e1; background: transparent; padding: 2px 4px; transition: all 0.2s; width: 180px; text-align: center; }
+        .input-underline:focus { outline: none; border-color: #3b82f6; background: #eff6ff; }
+        .bank-item { background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #475569; display: inline-block; margin: 2px; }
+        .correct { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+        .incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row justify-between items-center bg-slate-900 text-white p-6 rounded-2xl shadow-xl">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">Engineering English: Research Methods</h1>
+                <p class="text-slate-400 text-sm">Vocabulary & Word Formation Module (B2 Technical)</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <input type="text" id="studentName" placeholder="Enter Student Name" class="bg-slate-800 border border-slate-700 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            </div>
+        </header>
+
+        <!-- Task 1: Gap Fill -->
+        <section class="task-card mb-6">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                Task 1: Research Terminology
+            </h2>
+            <div class="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <p class="text-xs font-bold text-slate-500 uppercase mb-2">Vocabulary Bank:</p>
+                <div class="flex flex-wrap gap-1">
+                    <span class="bank-item">qualitative</span> <span class="bank-item">quantitative</span> <span class="bank-item">longitudinal</span> 
+                    <span class="bank-item">case study</span> <span class="bank-item">simulation</span> <span class="bank-item">prototype testing</span> 
+                    <span class="bank-item">literature review</span> <span class="bank-item">fieldwork</span> <span class="bank-item">data modeling</span> <span class="bank-item">peer-reviewed</span>
+                </div>
+            </div>
+            <ol class="space-y-4 text-slate-700 leading-relaxed text-sm">
+                <li>1. The team carried out <input type="text" id="t1_1" class="input-underline"> research to analyze numerical trends in energy consumption.</li>
+                <li>2. Engineers often use <input type="text" id="t1_2" class="input-underline"> to test how a structure will respond under extreme conditions.</li>
+                <li>3. Our report begins with a detailed <input type="text" id="t1_3" class="input-underline"> of existing research.</li>
+                <li>4. This project is based on a <input type="text" id="t1_4" class="input-underline"> of one small hydroelectric plant.</li>
+                <li>5. <input type="text" id="t1_5" class="input-underline"> allowed the researchers to observe system changes over five years.</li>
+                <li>6. The engineers conducted extensive <input type="text" id="t1_6" class="input-underline"> to collect real-world measurements.</li>
+                <li>7. Before mass production, the design underwent thorough <input type="text" id="t1_7" class="input-underline">.</li>
+                <li>8. A <input type="text" id="t1_8" class="input-underline"> study was used to gather opinions from local residents.</li>
+                <li>9. The algorithm’s accuracy was improved using advanced <input type="text" id="t1_9" class="input-underline"> techniques.</li>
+                <li>10. The findings were published in a <input type="text" id="t1_10" class="input-underline"> journal.</li>
+            </ol>
+        </section>
+
+        <!-- Task 2 & 3: Verbs -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <section class="task-card">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                    <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                    Task 2: Academic Verbs Matching
+                </h2>
+                <div class="text-xs mb-4 text-slate-500 italic bg-blue-50 p-2 rounded">Match the verb with the correct meaning (shuffled). Enter the letter a-h.</div>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-12 gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                        <div class="col-span-3">Verb</div>
+                        <div class="col-span-7">Meaning (Mixed)</div>
+                        <div class="col-span-2 text-center">Key</div>
+                    </div>
+                    <!-- Mixed meanings logic -->
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">analyze</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">a. explain meaning of results</div>
+                        <div class="col-span-2"><input type="text" id="t2_1" data-answer="b" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">collect</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">b. study something carefully</div>
+                        <div class="col-span-2"><input type="text" id="t2_2" data-answer="f" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">evaluate</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">c. determine size, quantity or degree</div>
+                        <div class="col-span-2"><input type="text" id="t2_3" data-answer="h" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">investigate</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">d. inspect carefully</div>
+                        <div class="col-span-2"><input type="text" id="t2_4" data-answer="g" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">measure</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">e. check if effective/works</div>
+                        <div class="col-span-2"><input type="text" id="t2_5" data-answer="c" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">examine</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">f. gather information</div>
+                        <div class="col-span-2"><input type="text" id="t2_6" data-answer="d" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">test</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">g. try to discover facts</div>
+                        <div class="col-span-2"><input type="text" id="t2_7" data-answer="e" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                    <div class="grid grid-cols-12 gap-2 items-center text-sm border-b border-slate-50 pb-1">
+                        <div class="col-span-3 font-semibold text-blue-700">interpret</div>
+                        <div class="col-span-7 text-slate-600 leading-tight">h. judge the value or quality</div>
+                        <div class="col-span-2"><input type="text" id="t2_8" data-answer="a" placeholder="?" class="w-full border rounded text-center py-1 uppercase mono"></div>
+                    </div>
+                </div>
+                <button onclick="checkTask2()" class="mt-4 w-full bg-slate-100 text-slate-600 py-1 rounded text-xs font-bold hover:bg-slate-200">Check Matching</button>
+            </section>
+
+            <section class="task-card">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                    <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">3</span>
+                    Task 3: Vocabulary in Context
+                </h2>
+                <div class="text-xs mb-4 text-slate-500 italic bg-slate-50 p-2 rounded">Use: analyze, collect, evaluate, investigate, measure, examine, test, interpret.</div>
+                <div class="space-y-4 text-sm">
+                    <div>1. Researchers <input type="text" id="t3_1" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> data from 300 students.</div>
+                    <div>2. The engineer will <input type="text" id="t3_2" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> the structural integrity.</div>
+                    <div>3. The team needs to <input type="text" id="t3_3" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> the experiment results.</div>
+                    <div>4. Scientists <input type="text" id="t3_4" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> the effects of the battery.</div>
+                    <div>5. We will <input type="text" id="t3_5" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> the temperature and pressure.</div>
+                    <div>6. The committee will <input type="text" id="t3_6" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> each proposal.</div>
+                    <div>7. The lab team will <input type="text" id="t3_7" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> the new sensor.</div>
+                    <div>8. Data is difficult to <input type="text" id="t3_8" class="border-b-2 border-blue-100 w-28 outline-none px-1 text-center font-semibold text-blue-700"> without comparisons.</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Task 4: Word Formation -->
+        <section class="task-card mb-6">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">4</span>
+                Task 4: Word Formation
+            </h2>
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-sm border-collapse rounded-lg overflow-hidden border border-slate-200">
+                    <thead>
+                        <tr class="bg-slate-900 text-white">
+                            <th class="p-3 border-r border-slate-700">Verb</th>
+                            <th class="p-3 border-r border-slate-700">Noun</th>
+                            <th class="p-3">Adjective</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-600">
+                        <tr class="bg-slate-50"><td class="p-3 border">analyze</td><td class="p-3 border font-mono">analysis</td><td class="p-3 border font-mono">analytical</td></tr>
+                        <tr><td class="p-3 border font-semibold text-slate-800">evaluate</td><td class="p-3 border"><input type="text" id="t4_n2" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a2" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr class="bg-slate-50"><td class="p-3 border font-semibold text-slate-800">observe</td><td class="p-3 border"><input type="text" id="t4_n3" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a3" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr><td class="p-3 border font-semibold text-slate-800">recommend</td><td class="p-3 border"><input type="text" id="t4_n4" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a4" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr class="bg-slate-50"><td class="p-3 border font-semibold text-slate-800">measure</td><td class="p-3 border"><input type="text" id="t4_n5" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a5" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr><td class="p-3 border font-semibold text-slate-800">investigate</td><td class="p-3 border"><input type="text" id="t4_n6" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a6" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr class="bg-slate-50"><td class="p-3 border font-semibold text-slate-800">interpret</td><td class="p-3 border"><input type="text" id="t4_n7" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a7" class="w-full outline-none bg-transparent"></td></tr>
+                        <tr><td class="p-3 border font-semibold text-slate-800">develop</td><td class="p-3 border"><input type="text" id="t4_n8" class="w-full outline-none bg-transparent"></td><td class="p-3 border"><input type="text" id="t4_a8" class="w-full outline-none bg-transparent"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="space-y-3 text-sm border-t border-slate-100 pt-4 bg-blue-50/30 p-4 rounded-xl">
+                <p class="text-xs font-bold text-blue-800 mb-2 uppercase">Fill using nouns/adjectives from the table:</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>1. The <input type="text" id="t4_s1" class="input-underline !w-28 text-sm"> of results was detailed.</div>
+                    <div>2. Made several <input type="text" id="t4_s2" class="input-underline !w-28 text-sm"> for efficiency.</div>
+                    <div>3. Careful <input type="text" id="t4_s3" class="input-underline !w-28 text-sm"> revealed a flaw.</div>
+                    <div>4. An <input type="text" id="t4_s4" class="input-underline !w-28 text-sm"> approach solved it.</div>
+                    <div>5. Conducted a thorough <input type="text" id="t4_s5" class="input-underline !w-28 text-sm"> of cause.</div>
+                    <div>6. Material is <input type="text" id="t4_s6" class="input-underline !w-28 text-sm"> for heat.</div>
+                    <div>7. Proper <input type="text" id="t4_s7" class="input-underline !w-28 text-sm"> avoids mistakes.</div>
+                    <div>8. Aim to <input type="text" id="t4_s8" class="input-underline !w-28 text-sm"> a new system.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task 5: Neutral Academic Meaning -->
+        <section class="task-card mb-10">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">5</span>
+                Task 5: Choosing the Right Word (Academic Neutrality)
+            </h2>
+            <div class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>1. System is:</span>
+                    <select id="t5_1" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>cheap</option><option>affordable</option><option>low-quality</option><option>economical</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>2. Tech is:</span>
+                    <select id="t5_2" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>revolutionary</option><option>innovative</option><option>risky</option><option>experimental</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>3. Design is:</span>
+                    <select id="t5_3" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>simple</option><option>basic</option><option>primitive</option><option>functional</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>4. Solution is:</span>
+                    <select id="t5_4" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>powerful</option><option>effective</option><option>aggressive</option><option>robust</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>5. Machine is:</span>
+                    <select id="t5_5" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>fast</option><option>efficient</option><option>complicated</option><option>outdated</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between">
+                    <span>6. Results are:</span>
+                    <select id="t5_6" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>impressive</option><option>significant</option><option>surprising</option><option>dramatic</option>
+                    </select>
+                </div>
+                <div class="p-3 border rounded-lg bg-white shadow-sm flex items-center justify-between md:col-span-2">
+                    <span>7. Method used:</span>
+                    <select id="t5_7" class="border rounded px-2 py-1 outline-none text-blue-700 font-medium">
+                        <option value="">--Select--</option>
+                        <option>modern</option><option>advanced</option><option>sophisticated</option><option>complex</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Report Area -->
+        <div class="text-center mb-10">
+            <button onclick="generateReport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded-full shadow-xl transition transform hover:scale-105">
+                Generate Final Assessment Report
+            </button>
+        </div>
+
+        <section id="reportSection" class="hidden task-card border-dashed border-2 border-blue-400 p-8 mb-20 bg-white">
+            <div class="flex justify-between items-center border-b pb-4 mb-6">
+                <h3 class="text-xl font-bold text-slate-900 uppercase tracking-tighter">Research Methods Progress Report</h3>
+                <span class="mono text-xs text-slate-400" id="reportDate"></span>
+            </div>
+            <div id="reportData" class="space-y-6 text-sm text-slate-700">
+                <!-- Data filled by JS -->
+            </div>
+            <div class="mt-8 flex gap-4 no-print">
+                <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-800 transition shadow">Download PDF Report</button>
+                <button onclick="location.reload()" class="bg-slate-100 text-slate-500 px-6 py-2 rounded-lg hover:bg-slate-200 transition">Start New Session</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function checkTask2() {
+            for(let i=1; i<=8; i++) {
+                const el = document.getElementById('t2_' + i);
+                const ans = el.getAttribute('data-answer');
+                if(el.value.toLowerCase().trim() === ans) {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                } else if (el.value.trim() !== "") {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                }
+            }
+        }
+
+        function generateReport() {
+            const name = document.getElementById('studentName').value || "ANONYMOUS STUDENT";
+            const date = new Date().toLocaleString();
+            document.getElementById('reportDate').innerText = date;
+
+            const inputs = document.querySelectorAll('input[type="text"], select');
+            let completed = 0;
+            inputs.forEach(i => { if(i.value.trim() !== "") completed++; });
+
+            const reportHtml = `
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-xs uppercase text-slate-500 font-bold mb-1">Assessed Student</p>
+                            <p class="text-lg font-bold text-blue-900">${name}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs uppercase text-slate-500 font-bold mb-1">Completion Rate</p>
+                            <p class="text-lg font-mono font-bold text-blue-900">${completed} / ${inputs.length}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-2 mb-3">T1: Research Methods</h4>
+                        <ul class="space-y-1 text-xs">
+                            <li>1. ${document.getElementById('t1_1').value || '---'}</li>
+                            <li>2. ${document.getElementById('t1_2').value || '---'}</li>
+                            <li>3. ${document.getElementById('t1_3').value || '---'}</li>
+                            <li>4. ${document.getElementById('t1_4').value || '---'}</li>
+                            <li>5. ${document.getElementById('t1_5').value || '---'}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 border-b-2 border-slate-100 pb-2 mb-3">T5: Academic Choice</h4>
+                        <ul class="space-y-1 text-xs">
+                            <li>System: <strong>${document.getElementById('t5_1').value || 'N/A'}</strong></li>
+                            <li>Design: <strong>${document.getElementById('t5_3').value || 'N/A'}</strong></li>
+                            <li>Results: <strong>${document.getElementById('t5_6').value || 'N/A'}</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-50 rounded italic text-xs text-slate-500 border-l-4 border-blue-400">
+                    This report confirms the student's mastery of technical research terminology and the ability to differentiate between subjective and neutral academic language in an engineering context.
+                </div>
+            `;
+
+            document.getElementById('reportData').innerHTML = reportHtml;
+            document.getElementById('reportSection').classList.remove('hidden');
+            document.getElementById('reportSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+    <style>
+        @media print { .no-print { display: none; } body { background: white; padding: 0; } .task-card { border: none; box-shadow: none; } }
+    </style>
+</body>
+</html>
